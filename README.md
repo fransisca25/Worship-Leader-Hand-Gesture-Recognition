@@ -281,8 +281,3 @@ The goal of this project is to create a practical AI-based tool that supports ch
 
 By combining computer vision and deep learning, this system helps improve communication, reduce confusion, and support a smoother worship experience for both the team and the congregation.
 
----
-
-## Author
-
-Created by Fransisca Celia K.
