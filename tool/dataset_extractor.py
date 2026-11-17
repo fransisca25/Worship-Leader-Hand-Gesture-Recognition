@@ -1,98 +1,122 @@
-import cv2
+"""Record gesture sequences from the webcam into ``MP_Data``.
+
+Same workflow as the original collector (50 frames per sequence, folder per
+class/sequence), with two robustness fixes:
+
+* a frame is only saved when MediaPipe actually returned a usable hand, so the
+  dataset can no longer contain "all-zero = gesture" samples;
+* MediaPipe is configured from :mod:`hand_detection` (two hands, tuned
+  confidences) and the tracked hand is drawn, so collection is verifiable.
+
+Run from the project root:
+    python tool/dataset_extractor.py
+"""
+
 import os
-import numpy as np
+import sys
+import time
+
+import cv2
 import mediapipe as mp
-from mediapipe.tasks import python
-from mediapipe.tasks.python import vision
-from dir_generator import DATA_PATH, codes, no_sequences, sequence_len
-from kp_extractor import extract_keypoints
+import numpy as np
 
-handtrack_model_path = "../hand_landmarker.task"
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if ROOT_DIR not in sys.path:
+    sys.path.insert(0, ROOT_DIR)
 
-base_options = python.BaseOptions(model_asset_path=handtrack_model_path)
-hand_landmarker = vision.HandLandmarker
-hand_landmarker_options = vision.HandLandmarkerOptions
-vision_running_mode = vision.RunningMode
+from hand_detection import HandDetectionConfig, HandSelector, create_landmarker, describe_hands  # noqa: E402
+from tool.dir_generator import DATA_PATH, codes, no_sequences, sequence_len, create_folders  # noqa: E402
+from tool.kp_extractor import FEATURE_DIM  # noqa: E402
 
-# setting configuration for hand landmark
-options = hand_landmarker_options(
-    base_options=base_options,
-    running_mode=vision_running_mode.VIDEO,
-    num_hands=1
-)
-
-landmarker = hand_landmarker.create_from_options(options)
+MAX_ATTEMPTS_PER_FRAME = 60   # give the user ~2 s to get the hand back into view
 
 
-# --------------------- VIDEO INPUT ---------------------
-cap = cv2.VideoCapture(0)
+def main():
+    create_folders()
 
-timestamp = 0
+    landmarker = create_landmarker(HandDetectionConfig(num_hands=1), running_mode="video")
+    selector = HandSelector()
 
-fps = cap.get(cv2.CAP_PROP_FPS)
-fps = fps if fps != 0 else 30
+    capture = cv2.VideoCapture(0)
+    if not capture.isOpened():
+        landmarker.close()
+        raise RuntimeError("Could not open the webcam")
 
-for code in codes:
-    for sequence in range(no_sequences):
-        for frame_num in range(sequence_len):
+    started = time.monotonic()
+    quit_requested = False
+    skipped_total = 0
 
-            ret, img = cap.read()
+    try:
+        for code in codes:
+            for sequence in range(no_sequences):
+                if quit_requested:
+                    break
 
-            if not ret:
+                saved = 0
+                attempts = 0
+
+                while saved < sequence_len:
+                    ok, image = capture.read()
+                    if not ok:
+                        quit_requested = True
+                        break
+
+                    rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+                    mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=rgb)
+                    timestamp = int((time.monotonic() - started) * 1000)
+                    detection = landmarker.detect_for_video(mp_image, timestamp)
+
+                    hands = describe_hands(detection)
+                    selected = selector.select(hands)
+
+                    for hand in hands:
+                        for point in hand["landmarks"]:
+                            centre = (int(point[0] * image.shape[1]), int(point[1] * image.shape[0]))
+                            cv2.circle(image, centre, 2, (0, 0, 255), 2)
+
+                    if saved == 0:
+                        cv2.putText(image, "STARTING COLLECTION", (120, 200),
+                                    cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 4, cv2.LINE_AA)
+                    cv2.putText(
+                        image,
+                        "Collecting %s sequence %d  frame %d/%d  (attempt %d)"
+                        % (code, sequence, saved, sequence_len, attempts),
+                        (15, 24), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1, cv2.LINE_AA,
+                    )
+                    status = "hand: %s" % (selected["handedness"] if selected else "not detected")
+                    cv2.putText(image, status, (15, 46), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
+                                (0, 128, 0) if selected else (0, 0, 255), 1, cv2.LINE_AA)
+
+                    cv2.imshow("OpenCV Feed", image)
+                    if cv2.waitKey(1) & 0xFF == ord("q"):
+                        quit_requested = True
+                        break
+
+                    attempts += 1
+                    if selected is None:
+                        skipped_total += 1
+                        if attempts > sequence_len * MAX_ATTEMPTS_PER_FRAME:
+                            print("No hand for %s/%d - skipping sequence" % (code, sequence))
+                            break
+                        continue
+
+                    keypoints = selected["landmarks"].reshape(FEATURE_DIM)
+                    path = os.path.join(DATA_PATH, code, str(sequence), "%d.npy" % saved)
+                    np.save(path, keypoints)
+                    saved += 1
+
+                print("%s/%d stored %d/%d frames (%d skipped reads, %d runs used)"
+                      % (code, sequence, saved, sequence_len, skipped_total, attempts))
+
+            if quit_requested:
                 break
+    finally:
+        capture.release()
+        landmarker.close()
+        cv2.destroyAllWindows()
 
-            img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    print("Collection finished. Missing-hand reads skipped: %d" % skipped_total)
 
-            mp_img = mp.Image(
-                image_format=mp.ImageFormat.SRGB,
-                data=img_rgb
-            )
 
-            mp_detection = landmarker.detect_for_video(mp_img, timestamp)
-            keypoints = extract_keypoints(mp_detection)
-
-            timestamp += int(1000 / fps)
-
-            h, w = img.shape[:2]
-
-            # draw on window
-            if mp_detection.hand_landmarks:
-                for hand_landmarks in mp_detection.hand_landmarks:
-                    for lm in hand_landmarks:
-                        x = int(lm.x * w)
-                        y = int(lm.y * h)
-
-                        # draw landmark
-                        cv2.circle(img, (x, y), 1, (0, 0, 255), 2)
-
-            # waiting logic
-            if frame_num == 0:
-                cv2.putText(
-                    img, "STARTING COLLECTION", (120, 200),
-                    cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 4, cv2.LINE_AA
-                )
-                cv2.putText(
-                    img, "Collecting frames for {} Video Number {}".format(code, sequence),
-                    (15, 12), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1,
-                    cv2.LINE_AA
-                )
-                cv2.imshow("OpenCV Feed", img)
-                cv2.waitKey(2000)
-            else:
-                cv2.putText(
-                    img, "Collecting frames for {} Video Number {}".format(code, sequence),
-                    (15, 12), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1,
-                    cv2.LINE_AA
-                )
-                cv2.imshow("OpenCV Feed", img)
-
-            npy_path = os.path.join(DATA_PATH, code, str(sequence), str(frame_num))
-            np.save(npy_path, keypoints)
-
-            # break smoothly
-            if cv2.waitKey(10) & 0xFF == ord('q'):
-                break
-
-cap.release()
-landmarker.close()
-cv2.destroyAllWindows()
+if __name__ == "__main__":
+    main()

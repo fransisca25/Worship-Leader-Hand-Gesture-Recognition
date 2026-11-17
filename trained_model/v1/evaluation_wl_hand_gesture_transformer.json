@@ -1,0 +1,598 @@
+{
+  "checkpoint": "trained_model/wl_hand_gesture_transformer.pth",
+  "feature_version": "v1",
+  "feature_config": {
+    "version": "v1",
+    "normalized": false
+  },
+  "model_config": {
+    "input_dim": 63,
+    "d_model": 64,
+    "d_ff": 128,
+    "num_heads": 2,
+    "dropout": 0.1,
+    "num_layers": 2,
+    "max_seq_len": 50,
+    "num_classes": 4
+  },
+  "codes": [
+    "verse",
+    "chorus",
+    "bridge",
+    "medley"
+  ],
+  "repair_missing_frames": true,
+  "gate_config": {
+    "confidence_threshold": 0.7,
+    "margin_threshold": 0.15,
+    "acquire_frames": 3,
+    "switch_frames": 3,
+    "min_hold_frames": 5,
+    "expire_frames": 8,
+    "history_size": 60
+  },
+  "dataset": {
+    "n_windows": 200,
+    "window_length": 50,
+    "total_frames": 10000,
+    "valid_frames": 9817,
+    "missing_frames": 183,
+    "missing_frame_rate": 0.0183,
+    "windows_with_missing_frames": 126,
+    "fully_missing_windows": 0,
+    "min_valid_frames": 24,
+    "per_class_missing_rate": {
+      "verse": 0.0116,
+      "chorus": 0.014,
+      "bridge": 0.0232,
+      "medley": 0.0244
+    },
+    "landmark_jitter_relative_p50": 0.0063,
+    "landmark_jitter_relative_p95": 0.1627,
+    "landmark_jitter_relative_p99": 0.9791,
+    "jitter_is_relative_to_wrist_middle_mcp": true
+  },
+  "clean": {
+    "accuracy": 0.92,
+    "macro_f1": 0.9209,
+    "confusion_matrix": [
+      [
+        43,
+        5,
+        0,
+        2
+      ],
+      [
+        0,
+        49,
+        1,
+        0
+      ],
+      [
+        0,
+        4,
+        46,
+        0
+      ],
+      [
+        0,
+        2,
+        2,
+        46
+      ]
+    ],
+    "per_class": {
+      "verse": {
+        "precision": 1.0,
+        "recall": 0.86,
+        "f1": 0.9247,
+        "support": 50,
+        "false_positive_rate": 0.0
+      },
+      "chorus": {
+        "precision": 0.8167,
+        "recall": 0.98,
+        "f1": 0.8909,
+        "support": 50,
+        "false_positive_rate": 0.0733
+      },
+      "bridge": {
+        "precision": 0.9388,
+        "recall": 0.92,
+        "f1": 0.9293,
+        "support": 50,
+        "false_positive_rate": 0.02
+      },
+      "medley": {
+        "precision": 0.9583,
+        "recall": 0.92,
+        "f1": 0.9388,
+        "support": 50,
+        "false_positive_rate": 0.0133
+      }
+    },
+    "n_samples": 200,
+    "mean_confidence": 0.9012,
+    "p10_confidence": 0.7448,
+    "expected_calibration_error": 0.0416
+  },
+  "perturbations": {
+    "identity": {
+      "accuracy": 0.92,
+      "macro_f1": 0.9209,
+      "mean_confidence": 0.9012
+    },
+    "translate_x0.10_y0.15": {
+      "accuracy": 0.915,
+      "macro_f1": 0.9162,
+      "mean_confidence": 0.9016
+    },
+    "scale_0.7x": {
+      "accuracy": 0.925,
+      "macro_f1": 0.9253,
+      "mean_confidence": 0.874
+    },
+    "scale_1.4x": {
+      "accuracy": 0.915,
+      "macro_f1": 0.9166,
+      "mean_confidence": 0.9153
+    },
+    "rotate_20deg": {
+      "accuracy": 0.9,
+      "macro_f1": 0.8999,
+      "mean_confidence": 0.8886
+    },
+    "rotate_30deg": {
+      "accuracy": 0.85,
+      "macro_f1": 0.8497,
+      "mean_confidence": 0.8812
+    },
+    "aspect_x_times_1.333": {
+      "accuracy": 0.935,
+      "macro_f1": 0.9348,
+      "mean_confidence": 0.9084
+    },
+    "aspect_y_times_1.333": {
+      "accuracy": 0.9,
+      "macro_f1": 0.9026,
+      "mean_confidence": 0.8999
+    },
+    "jitter_sigma0.020": {
+      "accuracy": 0.92,
+      "macro_f1": 0.9207,
+      "mean_confidence": 0.9016
+    },
+    "occlude_index_finger": {
+      "accuracy": 0.25,
+      "macro_f1": 0.1042,
+      "mean_confidence": 0.9585
+    },
+    "occlude_thumb": {
+      "accuracy": 0.325,
+      "macro_f1": 0.2478,
+      "mean_confidence": 0.8426
+    },
+    "detection_gap_15_of_50": {
+      "accuracy": 0.915,
+      "macro_f1": 0.9162,
+      "mean_confidence": 0.8961
+    },
+    "all_zero_window": {
+      "accuracy": null,
+      "macro_f1": null,
+      "mean_confidence": 0.9752,
+      "most_common_prediction": "medley",
+      "note": "meaningless input: the live gate must reject it (see rejection section)"
+    }
+  },
+  "rejection": {
+    "empty_no_hand": {
+      "n": 24,
+      "model_mean_confidence": 0.9752,
+      "model_false_cue_rate_gate_only": 1.0,
+      "live_abstain_rate": 1.0,
+      "live_samples": 6
+    },
+    "long_detection_gap": {
+      "n": 24,
+      "model_mean_confidence": 0.869,
+      "model_false_cue_rate_gate_only": 0.833,
+      "live_abstain_rate": 1.0,
+      "live_samples": 6
+    },
+    "ambiguous_transition": {
+      "n": 24,
+      "model_mean_confidence": 0.7848,
+      "model_false_cue_rate_gate_only": 0.667,
+      "live_abstain_rate": null,
+      "live_samples": 0
+    },
+    "true_gesture": {
+      "n": 24,
+      "acceptance_rate": 0.917,
+      "accuracy_when_accepted": 0.818,
+      "false_suppression_rate": 0.083,
+      "live_acceptance_rate": 0.833,
+      "live_accuracy_when_accepted": 0.8
+    }
+  },
+  "threshold_sweep": [
+    {
+      "confidence_threshold": 0.5,
+      "margin_threshold": 0.0,
+      "positive_acceptance": 0.995,
+      "accuracy_when_accepted": 0.925,
+      "negative_abstain": 0.0
+    },
+    {
+      "confidence_threshold": 0.5,
+      "margin_threshold": 0.1,
+      "positive_acceptance": 0.98,
+      "accuracy_when_accepted": 0.929,
+      "negative_abstain": 0.0
+    },
+    {
+      "confidence_threshold": 0.5,
+      "margin_threshold": 0.2,
+      "positive_acceptance": 0.975,
+      "accuracy_when_accepted": 0.933,
+      "negative_abstain": 0.028
+    },
+    {
+      "confidence_threshold": 0.6,
+      "margin_threshold": 0.0,
+      "positive_acceptance": 0.96,
+      "accuracy_when_accepted": 0.938,
+      "negative_abstain": 0.028
+    },
+    {
+      "confidence_threshold": 0.6,
+      "margin_threshold": 0.1,
+      "positive_acceptance": 0.96,
+      "accuracy_when_accepted": 0.938,
+      "negative_abstain": 0.028
+    },
+    {
+      "confidence_threshold": 0.6,
+      "margin_threshold": 0.2,
+      "positive_acceptance": 0.96,
+      "accuracy_when_accepted": 0.938,
+      "negative_abstain": 0.028
+    },
+    {
+      "confidence_threshold": 0.7,
+      "margin_threshold": 0.0,
+      "positive_acceptance": 0.915,
+      "accuracy_when_accepted": 0.962,
+      "negative_abstain": 0.083
+    },
+    {
+      "confidence_threshold": 0.7,
+      "margin_threshold": 0.1,
+      "positive_acceptance": 0.915,
+      "accuracy_when_accepted": 0.962,
+      "negative_abstain": 0.083
+    },
+    {
+      "confidence_threshold": 0.7,
+      "margin_threshold": 0.2,
+      "positive_acceptance": 0.915,
+      "accuracy_when_accepted": 0.962,
+      "negative_abstain": 0.083
+    },
+    {
+      "confidence_threshold": 0.8,
+      "margin_threshold": 0.0,
+      "positive_acceptance": 0.85,
+      "accuracy_when_accepted": 0.959,
+      "negative_abstain": 0.194
+    },
+    {
+      "confidence_threshold": 0.8,
+      "margin_threshold": 0.1,
+      "positive_acceptance": 0.85,
+      "accuracy_when_accepted": 0.959,
+      "negative_abstain": 0.194
+    },
+    {
+      "confidence_threshold": 0.8,
+      "margin_threshold": 0.2,
+      "positive_acceptance": 0.85,
+      "accuracy_when_accepted": 0.959,
+      "negative_abstain": 0.194
+    },
+    {
+      "confidence_threshold": 0.9,
+      "margin_threshold": 0.0,
+      "positive_acceptance": 0.685,
+      "accuracy_when_accepted": 0.964,
+      "negative_abstain": 0.389
+    },
+    {
+      "confidence_threshold": 0.9,
+      "margin_threshold": 0.1,
+      "positive_acceptance": 0.685,
+      "accuracy_when_accepted": 0.964,
+      "negative_abstain": 0.389
+    },
+    {
+      "confidence_threshold": 0.9,
+      "margin_threshold": 0.2,
+      "positive_acceptance": 0.685,
+      "accuracy_when_accepted": 0.964,
+      "negative_abstain": 0.389
+    }
+  ],
+  "transitions": {
+    "summary": {
+      "raw": {
+        "n_transitions": 24,
+        "median_latency_frames": 32.0,
+        "p90_latency_frames": 49.0,
+        "median_latency_ms": 1067.0,
+        "never_reached_target_rate": 0.0,
+        "mean_flicker_after_hit": 0.33,
+        "final_label_correct_rate": 1.0
+      },
+      "gated": {
+        "n_transitions": 24,
+        "median_latency_frames": 40.5,
+        "p90_latency_frames": 51.0,
+        "median_latency_ms": 1350.0,
+        "never_reached_target_rate": 0.0,
+        "mean_flicker_after_hit": 0.0,
+        "final_label_correct_rate": 1.0
+      }
+    },
+    "rows": [
+      {
+        "pair": "verse->chorus",
+        "trial": 0,
+        "raw_latency_frames": 16,
+        "gated_latency_frames": 28,
+        "raw_flicker": 0,
+        "gated_flicker": 0,
+        "raw_final_correct": true,
+        "gated_final_correct": true
+      },
+      {
+        "pair": "verse->chorus",
+        "trial": 1,
+        "raw_latency_frames": 15,
+        "gated_latency_frames": 22,
+        "raw_flicker": 0,
+        "gated_flicker": 0,
+        "raw_final_correct": true,
+        "gated_final_correct": true
+      },
+      {
+        "pair": "verse->bridge",
+        "trial": 0,
+        "raw_latency_frames": 49,
+        "gated_latency_frames": 51,
+        "raw_flicker": 0,
+        "gated_flicker": 0,
+        "raw_final_correct": true,
+        "gated_final_correct": true
+      },
+      {
+        "pair": "verse->bridge",
+        "trial": 1,
+        "raw_latency_frames": 34,
+        "gated_latency_frames": 39,
+        "raw_flicker": 0,
+        "gated_flicker": 0,
+        "raw_final_correct": true,
+        "gated_final_correct": true
+      },
+      {
+        "pair": "verse->medley",
+        "trial": 0,
+        "raw_latency_frames": 37,
+        "gated_latency_frames": 42,
+        "raw_flicker": 0,
+        "gated_flicker": 0,
+        "raw_final_correct": true,
+        "gated_final_correct": true
+      },
+      {
+        "pair": "verse->medley",
+        "trial": 1,
+        "raw_latency_frames": 36,
+        "gated_latency_frames": 43,
+        "raw_flicker": 0,
+        "gated_flicker": 0,
+        "raw_final_correct": true,
+        "gated_final_correct": true
+      },
+      {
+        "pair": "chorus->verse",
+        "trial": 0,
+        "raw_latency_frames": 39,
+        "gated_latency_frames": 45,
+        "raw_flicker": 0,
+        "gated_flicker": 0,
+        "raw_final_correct": true,
+        "gated_final_correct": true
+      },
+      {
+        "pair": "chorus->verse",
+        "trial": 1,
+        "raw_latency_frames": 49,
+        "gated_latency_frames": 51,
+        "raw_flicker": 0,
+        "gated_flicker": 0,
+        "raw_final_correct": true,
+        "gated_final_correct": true
+      },
+      {
+        "pair": "chorus->bridge",
+        "trial": 0,
+        "raw_latency_frames": 44,
+        "gated_latency_frames": 51,
+        "raw_flicker": 0,
+        "gated_flicker": 0,
+        "raw_final_correct": true,
+        "gated_final_correct": true
+      },
+      {
+        "pair": "chorus->bridge",
+        "trial": 1,
+        "raw_latency_frames": 6,
+        "gated_latency_frames": 12,
+        "raw_flicker": 0,
+        "gated_flicker": 0,
+        "raw_final_correct": true,
+        "gated_final_correct": true
+      },
+      {
+        "pair": "chorus->medley",
+        "trial": 0,
+        "raw_latency_frames": 28,
+        "gated_latency_frames": 34,
+        "raw_flicker": 0,
+        "gated_flicker": 0,
+        "raw_final_correct": true,
+        "gated_final_correct": true
+      },
+      {
+        "pair": "chorus->medley",
+        "trial": 1,
+        "raw_latency_frames": 21,
+        "gated_latency_frames": 29,
+        "raw_flicker": 0,
+        "gated_flicker": 0,
+        "raw_final_correct": true,
+        "gated_final_correct": true
+      },
+      {
+        "pair": "bridge->verse",
+        "trial": 0,
+        "raw_latency_frames": 49,
+        "gated_latency_frames": 51,
+        "raw_flicker": 0,
+        "gated_flicker": 0,
+        "raw_final_correct": true,
+        "gated_final_correct": true
+      },
+      {
+        "pair": "bridge->verse",
+        "trial": 1,
+        "raw_latency_frames": 49,
+        "gated_latency_frames": 51,
+        "raw_flicker": 0,
+        "gated_flicker": 0,
+        "raw_final_correct": true,
+        "gated_final_correct": true
+      },
+      {
+        "pair": "bridge->chorus",
+        "trial": 0,
+        "raw_latency_frames": 3,
+        "gated_latency_frames": 35,
+        "raw_flicker": 4,
+        "gated_flicker": 0,
+        "raw_final_correct": true,
+        "gated_final_correct": true
+      },
+      {
+        "pair": "bridge->chorus",
+        "trial": 1,
+        "raw_latency_frames": 49,
+        "gated_latency_frames": 51,
+        "raw_flicker": 0,
+        "gated_flicker": 0,
+        "raw_final_correct": true,
+        "gated_final_correct": true
+      },
+      {
+        "pair": "bridge->medley",
+        "trial": 0,
+        "raw_latency_frames": 30,
+        "gated_latency_frames": 36,
+        "raw_flicker": 0,
+        "gated_flicker": 0,
+        "raw_final_correct": true,
+        "gated_final_correct": true
+      },
+      {
+        "pair": "bridge->medley",
+        "trial": 1,
+        "raw_latency_frames": 43,
+        "gated_latency_frames": 47,
+        "raw_flicker": 2,
+        "gated_flicker": 0,
+        "raw_final_correct": true,
+        "gated_final_correct": true
+      },
+      {
+        "pair": "medley->verse",
+        "trial": 0,
+        "raw_latency_frames": 27,
+        "gated_latency_frames": 29,
+        "raw_flicker": 0,
+        "gated_flicker": 0,
+        "raw_final_correct": true,
+        "gated_final_correct": true
+      },
+      {
+        "pair": "medley->verse",
+        "trial": 1,
+        "raw_latency_frames": 22,
+        "gated_latency_frames": 31,
+        "raw_flicker": 0,
+        "gated_flicker": 0,
+        "raw_final_correct": true,
+        "gated_final_correct": true
+      },
+      {
+        "pair": "medley->chorus",
+        "trial": 0,
+        "raw_latency_frames": 26,
+        "gated_latency_frames": 32,
+        "raw_flicker": 0,
+        "gated_flicker": 0,
+        "raw_final_correct": true,
+        "gated_final_correct": true
+      },
+      {
+        "pair": "medley->chorus",
+        "trial": 1,
+        "raw_latency_frames": 29,
+        "gated_latency_frames": 51,
+        "raw_flicker": 2,
+        "gated_flicker": 0,
+        "raw_final_correct": true,
+        "gated_final_correct": true
+      },
+      {
+        "pair": "medley->bridge",
+        "trial": 0,
+        "raw_latency_frames": 47,
+        "gated_latency_frames": 49,
+        "raw_flicker": 0,
+        "gated_flicker": 0,
+        "raw_final_correct": true,
+        "gated_final_correct": true
+      },
+      {
+        "pair": "medley->bridge",
+        "trial": 1,
+        "raw_latency_frames": 15,
+        "gated_latency_frames": 18,
+        "raw_flicker": 0,
+        "gated_flicker": 0,
+        "raw_final_correct": true,
+        "gated_final_correct": true
+      }
+    ]
+  },
+  "latency": {
+    "device": "cpu",
+    "mean_ms": 5.611,
+    "median_ms": 4.308,
+    "p95_ms": 9.05,
+    "implied_fps": 232.1,
+    "note": "classifier only; MediaPipe detection dominates end-to-end latency"
+  }
+}

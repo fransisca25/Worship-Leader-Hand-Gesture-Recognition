@@ -1,0 +1,427 @@
+{
+  "protocol": "grouped cross-validation, whole recording sequences held out",
+  "n_folds": 5,
+  "folds": [
+    {
+      "fold": 1,
+      "best_epoch": 12,
+      "n_test_windows": 40,
+      "metrics": {
+        "accuracy": 0.85,
+        "macro_f1": 0.8421,
+        "confusion_matrix": [
+          [
+            11,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            8,
+            0,
+            0
+          ],
+          [
+            0,
+            2,
+            4,
+            0
+          ],
+          [
+            3,
+            0,
+            0,
+            11
+          ]
+        ],
+        "per_class": {
+          "verse": {
+            "precision": 0.7333,
+            "recall": 1.0,
+            "f1": 0.8462,
+            "support": 11,
+            "false_positive_rate": 0.1379
+          },
+          "chorus": {
+            "precision": 0.8,
+            "recall": 0.8889,
+            "f1": 0.8421,
+            "support": 9,
+            "false_positive_rate": 0.0645
+          },
+          "bridge": {
+            "precision": 1.0,
+            "recall": 0.6667,
+            "f1": 0.8,
+            "support": 6,
+            "false_positive_rate": 0.0
+          },
+          "medley": {
+            "precision": 1.0,
+            "recall": 0.7857,
+            "f1": 0.88,
+            "support": 14,
+            "false_positive_rate": 0.0
+          }
+        },
+        "n_samples": 40
+      }
+    },
+    {
+      "fold": 2,
+      "best_epoch": 5,
+      "n_test_windows": 40,
+      "metrics": {
+        "accuracy": 0.75,
+        "macro_f1": 0.7233,
+        "confusion_matrix": [
+          [
+            8,
+            0,
+            0,
+            1
+          ],
+          [
+            2,
+            9,
+            0,
+            0
+          ],
+          [
+            0,
+            5,
+            3,
+            2
+          ],
+          [
+            0,
+            0,
+            0,
+            10
+          ]
+        ],
+        "per_class": {
+          "verse": {
+            "precision": 0.8,
+            "recall": 0.8889,
+            "f1": 0.8421,
+            "support": 9,
+            "false_positive_rate": 0.0645
+          },
+          "chorus": {
+            "precision": 0.6429,
+            "recall": 0.8182,
+            "f1": 0.72,
+            "support": 11,
+            "false_positive_rate": 0.1724
+          },
+          "bridge": {
+            "precision": 1.0,
+            "recall": 0.3,
+            "f1": 0.4615,
+            "support": 10,
+            "false_positive_rate": 0.0
+          },
+          "medley": {
+            "precision": 0.7692,
+            "recall": 1.0,
+            "f1": 0.8696,
+            "support": 10,
+            "false_positive_rate": 0.1
+          }
+        },
+        "n_samples": 40
+      }
+    },
+    {
+      "fold": 3,
+      "best_epoch": 24,
+      "n_test_windows": 40,
+      "metrics": {
+        "accuracy": 0.95,
+        "macro_f1": 0.9466,
+        "confusion_matrix": [
+          [
+            8,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            8,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            11,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            11
+          ]
+        ],
+        "per_class": {
+          "verse": {
+            "precision": 1.0,
+            "recall": 0.8889,
+            "f1": 0.9412,
+            "support": 9,
+            "false_positive_rate": 0.0
+          },
+          "chorus": {
+            "precision": 0.8,
+            "recall": 1.0,
+            "f1": 0.8889,
+            "support": 8,
+            "false_positive_rate": 0.0625
+          },
+          "bridge": {
+            "precision": 1.0,
+            "recall": 0.9167,
+            "f1": 0.9565,
+            "support": 12,
+            "false_positive_rate": 0.0
+          },
+          "medley": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "support": 11,
+            "false_positive_rate": 0.0
+          }
+        },
+        "n_samples": 40
+      }
+    },
+    {
+      "fold": 4,
+      "best_epoch": 14,
+      "n_test_windows": 40,
+      "metrics": {
+        "accuracy": 0.825,
+        "macro_f1": 0.8211,
+        "confusion_matrix": [
+          [
+            12,
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            7,
+            0,
+            0
+          ],
+          [
+            0,
+            3,
+            9,
+            0
+          ],
+          [
+            2,
+            0,
+            0,
+            5
+          ]
+        ],
+        "per_class": {
+          "verse": {
+            "precision": 0.8,
+            "recall": 0.9231,
+            "f1": 0.8571,
+            "support": 13,
+            "false_positive_rate": 0.1111
+          },
+          "chorus": {
+            "precision": 0.6364,
+            "recall": 0.875,
+            "f1": 0.7368,
+            "support": 8,
+            "false_positive_rate": 0.125
+          },
+          "bridge": {
+            "precision": 1.0,
+            "recall": 0.75,
+            "f1": 0.8571,
+            "support": 12,
+            "false_positive_rate": 0.0
+          },
+          "medley": {
+            "precision": 1.0,
+            "recall": 0.7143,
+            "f1": 0.8333,
+            "support": 7,
+            "false_positive_rate": 0.0
+          }
+        },
+        "n_samples": 40
+      }
+    },
+    {
+      "fold": 5,
+      "best_epoch": 12,
+      "n_test_windows": 40,
+      "metrics": {
+        "accuracy": 0.9,
+        "macro_f1": 0.907,
+        "confusion_matrix": [
+          [
+            7,
+            1,
+            0,
+            0
+          ],
+          [
+            2,
+            12,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            9,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            8
+          ]
+        ],
+        "per_class": {
+          "verse": {
+            "precision": 0.7778,
+            "recall": 0.875,
+            "f1": 0.8235,
+            "support": 8,
+            "false_positive_rate": 0.0625
+          },
+          "chorus": {
+            "precision": 0.8571,
+            "recall": 0.8571,
+            "f1": 0.8571,
+            "support": 14,
+            "false_positive_rate": 0.0769
+          },
+          "bridge": {
+            "precision": 1.0,
+            "recall": 0.9,
+            "f1": 0.9474,
+            "support": 10,
+            "false_positive_rate": 0.0
+          },
+          "medley": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "support": 8,
+            "false_positive_rate": 0.0
+          }
+        },
+        "n_samples": 40
+      }
+    }
+  ],
+  "pooled": {
+    "accuracy": 0.855,
+    "macro_f1": 0.8557,
+    "confusion_matrix": [
+      [
+        46,
+        3,
+        0,
+        1
+      ],
+      [
+        6,
+        44,
+        0,
+        0
+      ],
+      [
+        0,
+        12,
+        36,
+        2
+      ],
+      [
+        5,
+        0,
+        0,
+        45
+      ]
+    ],
+    "per_class": {
+      "verse": {
+        "precision": 0.807,
+        "recall": 0.92,
+        "f1": 0.8598,
+        "support": 50,
+        "false_positive_rate": 0.0733
+      },
+      "chorus": {
+        "precision": 0.7458,
+        "recall": 0.88,
+        "f1": 0.8073,
+        "support": 50,
+        "false_positive_rate": 0.1
+      },
+      "bridge": {
+        "precision": 1.0,
+        "recall": 0.72,
+        "f1": 0.8372,
+        "support": 50,
+        "false_positive_rate": 0.0
+      },
+      "medley": {
+        "precision": 0.9375,
+        "recall": 0.9,
+        "f1": 0.9184,
+        "support": 50,
+        "false_positive_rate": 0.02
+      }
+    },
+    "n_samples": 200
+  },
+  "mean_accuracy": 0.855,
+  "std_accuracy": 0.0678,
+  "mean_macro_f1": 0.848,
+  "std_macro_f1": 0.0768,
+  "config": {
+    "mode": "cv",
+    "feature_version": "v2",
+    "augment": "full",
+    "no_repair": false,
+    "transitions": 2,
+    "data": "MP_Data",
+    "no_sequences": 50,
+    "sequence_len": 50,
+    "batch_size": 8,
+    "epochs": 40,
+    "min_epochs": 15,
+    "patience": 8,
+    "lr": 0.001,
+    "weight_decay": 0.0001,
+    "label_smoothing": 0.05,
+    "dropout": 0.1,
+    "seed": 42,
+    "folds": 5,
+    "cv_inner_holdout": 8,
+    "holdout_per_class": 10,
+    "min_valid_frames": 25,
+    "device": "auto",
+    "out": null,
+    "no_plot": true
+  }
+}
