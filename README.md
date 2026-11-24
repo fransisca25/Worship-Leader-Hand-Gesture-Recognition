@@ -1,11 +1,11 @@
-# Worship Gesture Recognition for Multimedia Team
+# Worship Gesture Recognition for Multimedia Team V.2
 
 A real-time hand gesture recognition system that helps a church multimedia team
 follow the worship leader: the leader shows **Verse**, **Chorus**, **Bridge** or
-**Medley / Song Change**, and the application shows the recognised cue on screen.
+**Medley**, and the application shows the recognised cue on screen.
 
-The recognition core is unchanged - **MediaPipe Hand Landmarker** finds 21 hand
-landmarks and **this project's own PyTorch Transformer** classifies a 50-frame
+Using **MediaPipe Hand Landmarker** finds 21 hand
+landmarks and **this project's own Transformer using PyTorch** classifies a 50-frame
 window of 63 landmark values into the same four gestures - but the surrounding
 engineering has been hardened so the cue is trustworthy in a real service:
 a missing hand can no longer produce a confident wrong cue, the features are
@@ -15,11 +15,10 @@ measured on unseen recordings, and the output is filtered in time.
 - v1 model: `trained_model/wl_hand_gesture_transformer.pth`
 - Enhanced model (v2): `trained_model/wl_hand_gesture_transformer_v2.pth`
 - Dataset: `MP_Data/` 
-- Original README: `README_original.md`
 
 ---
 
-## 1. What the system does (unchanged)
+## 1. What the system does
 
 1. The webcam captures the worship leader.
 2. MediaPipe detects the hand and returns 21 landmarks.
@@ -33,7 +32,7 @@ measured on unseen recordings, and the output is filtered in time.
 | `verse` | verse gesture | show verse lyrics |
 | `chorus` | chorus gesture | show chorus lyrics |
 | `bridge` | bridge gesture | show bridge lyrics |
-| `medley` | medley / song change | prepare for a medley or the next song |
+| `medley` | medley | prepare for a medley or the next song |
 
 The four labels, their meaning and the class order (`verse`, `chorus`, `bridge`,
 `medley`) are exactly the original ones.
@@ -42,7 +41,7 @@ The four labels, their meaning and the class order (`verse`, `chorus`, `bridge`,
 
 ## 2. What changed, and why
 
-| Area | Before | Now |
+| Area | v.1 | v.2 |
 |---|---|---|
 | Missing hand | `extract_keypoints` returned `zeros(63)` and the deque kept filling, so "no hand" was a valid model input. Measured: an all-zero window produced **"medley" at 0.975 confidence**. | The buffer never stores zero frames: it holds the last pose for a few frames, then expires. Windows need 35 of 50 real frames. An empty frame now produces **no cue** (`no_gesture`). |
 | Landmarks | raw image coordinates (position, distance and tilt included) | feature version **v2**: wrist-centred, scale-normalised, in-plane rotation-normalised, same 63 numbers, same transformer |
