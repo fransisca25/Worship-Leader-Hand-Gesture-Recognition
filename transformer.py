@@ -209,3 +209,34 @@ class HandGestureTransformer(nn.Module):
         logits = self.classifier(decoder_out)
         return logits
 
+
+DEFAULT_MODEL_CONFIG = {
+    "input_dim": 63,
+    "d_model": 64,
+    "d_ff": 128,
+    "num_heads": 2,
+    "dropout": 0.1,
+    "num_layers": 2,
+    "max_seq_len": 50,
+}
+
+
+def build_hand_gesture_transformer(config=None, num_classes=None):
+    """Build this project's transformer from a checkpoint-style config mapping.
+
+    The architecture itself is unchanged; the factory only removes the need to
+    repeat the constructor arguments in ``train.py``, ``main.py`` and
+    ``evaluate.py``.
+    """
+    merged = dict(DEFAULT_MODEL_CONFIG)
+    config = config or {}
+    for key in merged:
+        if key in config and config[key] is not None:
+            merged[key] = config[key]
+    if num_classes is None:
+        num_classes = config.get("num_classes", 4)
+    model = HandGestureTransformer(num_classes=int(num_classes), **merged)
+    model.config = dict(merged, num_classes=int(num_classes))
+    return model
+
+
